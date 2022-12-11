@@ -1,19 +1,56 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { createTicket, reset } from '../features/tickets/ticketSlice';
+import Spinner from '../components/Spinner';
+import BackBtn from '../components/BackBtn'
 
 function NewTicket() {
   const { user } = useSelector((state) => state.auth);
+  const { isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.ticket
+  );
+
   const [name] = useState(user.name);
   const [email] = useState(user.email);
-  const [product, setProduct] = useState('');
+  const [product, setProduct] = useState('iPhone');
   const [description, setDescription] = useState('');
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
+
+    if (isSuccess) {
+      dispatch(reset());
+      navigate('/tickets');
+    }
+
+    dispatch(reset());
+  }, [isError, message, isSuccess, navigate, dispatch]);
+
   const onSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
+    dispatch(createTicket({ product, description }))
+      .unwrap()
+      .then(() => {
+        // We got a good response so navigate the user
+        navigate('/tickets')
+        toast.success('New ticket created!')
+      })
+      .catch(toast.error)
   };
 
+  if (isLoading) {
+    return <Spinner/>
+  }
   return (
     <>
+    <BackBtn url={'/'}/>
       <section className='heading'>
         <h1>Create New Ticket</h1>
         <p>Please fill out the form below</p>
@@ -35,13 +72,11 @@ function NewTicket() {
               name='product'
               id='product'
               value={product}
-              onChange={(e) => {
-                setProduct(e.target.value);
-              }}
+              onChange={(e) => setProduct(e.target.value)}
             >
               <option value='iPhone'>iPhone</option>
-              <option value='iMac'>iMac</option>
               <option value='Macbook Pro'>Macbook Pro</option>
+              <option value='iMac'>iMac</option>
               <option value='iPad'>iPad</option>
             </select>
           </div>
@@ -60,8 +95,10 @@ function NewTicket() {
               }}
             ></textarea>
           </div>
-          <div className="form-group">
-            <button className="btn btn-block" type='submit'>Submit</button>
+          <div className='form-group'>
+            <button className='btn btn-block' type='submit'>
+              Submit
+            </button>
           </div>
         </form>
       </section>
