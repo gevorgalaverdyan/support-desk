@@ -30,9 +30,8 @@ const getTicket = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 
-  console.log(req.params.id)
+  
   const ticket = await Ticket.findById(req.params.id);
-  console.log(ticket)
 
   if (!ticket) {
     res.status(404);
@@ -71,7 +70,6 @@ const createTicket = asyncHandler(async (req, res) => {
     status: 'new',
   });
 
-  console.log(ticket);
   res.status(201).json(ticket);
 });
 
