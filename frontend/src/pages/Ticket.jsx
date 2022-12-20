@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTicket, closeTicket } from '../features/tickets/ticketSlice';
-import { getNotes, reset as notesReset, createNote } from '../features/notes/noteSlice';
+import { getNotes, createNote } from '../features/notes/noteSlice';
 import BackBtn from '../components/BackBtn';
 import Spinner from '../components/Spinner';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -39,7 +39,6 @@ function Ticket() {
   );
 
   const navigate = useNavigate();
-  const params = useParams();
   const dispatch = useDispatch();
   const { ticketId } = useParams();
 
@@ -49,8 +48,8 @@ function Ticket() {
     }
 
     dispatch(getTicket(ticketId));
-    dispatch(getNotes(ticketId));
-  }, [isError, message, ticketId]);
+    dispatch(getNotes(ticketId)); // eslint-disable-next-line
+  }, [isError, message, ticketId]); 
 
   const onTicketClose = () => {
     dispatch(closeTicket(ticketId));
@@ -60,9 +59,9 @@ function Ticket() {
 
   const onNoteSubmit = (e) => {
     e.preventDefault();
-    dispatch(createNote({noteText, ticketId}))
+    dispatch(createNote({ noteText, ticketId }));
     closeModal();
-  }
+  };
 
   const openModal = () => {
     setModalIsOpen(true);
@@ -90,8 +89,7 @@ function Ticket() {
           </span>
         </h2>
         <h3>
-          Date Submitted:{' '}
-          {new Date(ticket.createdAt).toLocaleString('en-US')}
+          Date Submitted: {new Date(ticket.createdAt).toLocaleString('en-US')}
         </h3>
         <h3>Product: {ticket.product}</h3>
         <hr />
