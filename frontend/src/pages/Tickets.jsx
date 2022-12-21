@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { getTickets } from '../features/tickets/ticketSlice'
 import Spinner from '../components/Spinner'
-import BackButton from '../components/BackBtn'
+import BackBtn from '../components/BackBtn';
 import TicketItem from '../components/TicketItem'
 
 function Tickets() {
@@ -25,7 +25,7 @@ function Tickets() {
 
   return (
     <>
-      <BackButton />
+      <BackBtn url={'/'}/>
       <h1>Tickets</h1>
       <div className='tickets'>
         <div className='ticket-headings'>
@@ -39,7 +39,7 @@ function Tickets() {
         ))}
       </div>
     </>
-  )
+  );
 }
 
 export default Tickets
